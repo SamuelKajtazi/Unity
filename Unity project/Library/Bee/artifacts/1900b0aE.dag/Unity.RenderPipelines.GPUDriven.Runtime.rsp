@@ -42,6 +42,7 @@
 -define:PLATFORM_ARCH_64
 -define:UNITY_64
 -define:UNITY_INCLUDE_TESTS
+-define:UNITY_ENABLE_CLOUD_SERVICES_ENGINE_DIAGNOSTICS_MANAGED
 -define:ENABLE_AR
 -define:ENABLE_AUDIO
 -define:ENABLE_AUDIO_SCRIPTABLE_PIPELINE
@@ -144,6 +145,7 @@
 -define:ENABLE_TILEMAP
 -define:ENABLE_TIMELINE
 -define:ENABLE_INPUT_SYSTEM
+-define:ENABLE_LEGACY_INPUT_MANAGER
 -define:TEXTCORE_FONT_ENGINE_1_5_OR_NEWER
 -define:TEXTCORE_TEXT_ENGINE_1_5_OR_NEWER
 -define:TEXTCORE_FONT_ENGINE_1_6_OR_NEWER
@@ -528,7 +530,7 @@
 /debug:portable
 /nologo
 /RuntimeMetadataVersion:v4.0.30319
--ruleset:"C:/Karlson remastered/Karlson remastered/Library/ImmutablePackage.ruleset"
+-ruleset:"C:/Users/Samuel/Desktop/Unity project/Unity project/Library/ImmutablePackage.ruleset"
 /nowarn:0169
 /nowarn:0649
 /nowarn:0282
