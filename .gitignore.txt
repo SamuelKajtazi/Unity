@@ -1,2 +1,2 @@
 #komentar
-/[I]git commands (ignore)
+/[Ig]it commands (ignore)/
