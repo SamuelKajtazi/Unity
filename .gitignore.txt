@@ -1,3 +1,0 @@
-#komentar
-/[Ii]gnoriraj/
-*.cs
