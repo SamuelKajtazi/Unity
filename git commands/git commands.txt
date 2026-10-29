@@ -1,2 +1,3 @@
-git commit -m "--text--"
-git add .
+git commit -m "--text--" -> Creates a new commit with the message "--text--" that saves the currently staged changes.
+git add . -> Stages all modified, new, and deleted files in the current directory (and subdirectories) so they can be included in the next commit.
+git push origin master -> Uploads your local master branch commits to the remote repository named origin.
