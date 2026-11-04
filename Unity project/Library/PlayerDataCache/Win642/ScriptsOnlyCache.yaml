@@ -1,9 +1,15 @@
 ScriptsOnlyBuild:
   usedScripts:
+    Assembly-CSharp-Editor.dll:
+    - ReadmeEditor
     Assembly-CSharp.dll:
+    - Bullet
+    - EnemyHealth
     - MainMenuManager
     - PauseMenu
     - PlayerMovement
+    - ProjectileGun
+    - Readme
     Unity.InputSystem.dll:
     - UnityEngine.InputSystem.Editor.RemoteInputPlayerConnectionEditor
     - UnityEngine.InputSystem.InputActionAsset
@@ -233,6 +239,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
+    - Class: 54
+      Script: {instanceID: 0}
     - Class: 64
       Script: {instanceID: 0}
     - Class: 65
@@ -241,14 +249,22 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 89
       Script: {instanceID: 0}
+    - Class: 96
+      Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
+      Script: {fileID: 11500000, guid: 8639ae0e898fc694db038ad7e3f0a5b0, type: 3}
+    - Class: 114
+      Script: {fileID: 11500000, guid: abd0101e27e3649499ec664d47bb5086, type: 3}
+    - Class: 114
       Script: {fileID: 11500000, guid: e3a37d189d62d7b40ab360761bc332b2, type: 3}
     - Class: 114
       Script: {fileID: 11500000, guid: fffb0dd5280b4c44383b747aa691563e, type: 3}
+    - Class: 114
+      Script: {fileID: 11500000, guid: 508130b0b062a414cb8e00bf1009a8a4, type: 3}
     - Class: 114
       Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
     - Class: 114
@@ -286,6 +302,8 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
     - Class: 115
+      Script: {instanceID: 0}
+    - Class: 120
       Script: {instanceID: 0}
     - Class: 128
       Script: {instanceID: 0}
@@ -425,6 +443,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.RenderPipelines.Universal.2D.Runtime
     namespaceName: UnityEngine.Rendering.Universal
     className: CinemachineUniversalPixelPerfect
+  - hash:
+      serializedVersion: 2
+      Hash: 8340465e8a3032d357fa5465382aedf4
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: Bullet
   - hash:
       serializedVersion: 2
       Hash: 226c8520697da5fc5d83c4d37b03510e
@@ -1165,6 +1189,12 @@ ScriptsOnlyBuild:
     className: Benchmark04
   - hash:
       serializedVersion: 2
+      Hash: f3f4bfe16032213b49941d527176ee16
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: EnemyHealth
+  - hash:
+      serializedVersion: 2
       Hash: e1770e07eeb3f03d25fc5a6411e2f31c
     assemblyName: Unity.InputSystem
     namespaceName: UnityEngine.InputSystem
@@ -1339,6 +1369,12 @@ ScriptsOnlyBuild:
     className: UniversalAdditionalCameraData
   - hash:
       serializedVersion: 2
+      Hash: 012550620911a94d1410037c244bb53a
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: ProjectileGun
+  - hash:
+      serializedVersion: 2
       Hash: 665da785348a8806bf1524fe10742a60
     assemblyName: Assembly-CSharp
     namespaceName: TMPro.Examples
@@ -1503,5 +1539,5 @@ ScriptsOnlyBuild:
   scenePathNames:
   - Assets/Scenes/MainMenuScene.unity
   - Assets/Scenes/GameScene.unity
-  nativeClasses: 000000003000000012000000820000001c0000001b000000150000000200000072000000060000003100000073000000090000008100000048000000d50000000d000000c0a2192736010000080000000b000000370000007e0000000f1baa530a05df37130000007bce860a8d0000002f000000740000005e0000002c0100009300000005000000620000001e0000004e0000000400000001000000c4000000140000006c00000059000000800000009d000000e000000003000000de000000df0000006800000051000000b40000002b000000170000001900000021000000400000003800000041000000880000008f000000i
-  playerPath: C:/Users/Samuel/Desktop/Unity project/Version 1/Unity project.exe
+  nativeClasses: 000000003000000012000000820000001c0000001b000000150000000200000072000000060000003100000073000000090000008100000048000000d50000000d000000c0a2192736010000080000000b000000370000007e0000000f1baa530a05df37130000007bce860a8d0000002f000000740000005e0000002c0100009300000005000000620000001e0000004e0000000400000001000000c4000000140000006c00000059000000800000009d000000e000000003000000de000000df0000006800000051000000b40000002b000000170000001900000021000000400000003800000041000000880000008f000000360000006000000078000000i
+  playerPath: C:/Users/Samuel/Desktop/Unity project/Game/Unity project.exe
