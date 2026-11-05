@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
@@ -11,10 +10,15 @@ public class Bullet : MonoBehaviour
         if (hasHit) return;
         hasHit = true;
 
-        EnemyHealth enemy = collision.gameObject.GetComponent<EnemyHealth>();
+        EnemyHealth enemy = collision.gameObject.GetComponentInParent<EnemyHealth>();
         if (enemy != null)
         {
             enemy.TakeDamage(damage);
+            Debug.Log("Hit enemy for " + damage);
+        }
+        else
+        {
+            Debug.Log("Bullet hit " + collision.gameObject.name + " (no EnemyHealth found)");
         }
 
         Destroy(gameObject);
