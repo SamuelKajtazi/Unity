@@ -1,8 +1,13 @@
 <linker>
 	<assembly fullname="Assembly-CSharp" ignoreIfMissing="1">
+		<type fullname="DeathScreen">
+			<method name="Menu"/>
+			<method name="Restart"/>
+		</type>
 		<type fullname="MainMenuManager">
+			<method name="CloseSettings"/>
 			<method name="LoadScene"/>
-			<method name="QuitGame"/>
+			<method name="OpenSettings"/>
 			<method name="QuitGame"/>
 		</type>
 		<type fullname="PauseMenu">
