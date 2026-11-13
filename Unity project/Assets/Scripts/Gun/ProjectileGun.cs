@@ -15,16 +15,31 @@ public class ProjectileGun : MonoBehaviour
     public KeyCode reloadKey = KeyCode.R;
     public TextMeshProUGUI ammoText;   // optional, can stay empty
 
+    [Header("Recoil")]
+    public Transform gunModel;          // the part that kicks (leave empty to use this object)
+    public Vector3 recoilKickPosition = new Vector3(0f, 0.01f, -0.06f);   // how far the gun kicks back
+    public Vector3 recoilKickRotation = new Vector3(-6f, 0f, 0f);         // how much the gun tilts up
+    public float recoilReturnSpeed = 14f;                                 // how fast it returns to normal
+
     int currentAmmo;
     bool isReloading;
     Collider[] ownColliders;
     bool fireNextFrame;
+
+    Vector3 gunStartPos;
+    Quaternion gunStartRot;
+    Vector3 recoilPos;
+    Vector3 recoilRot;
 
     void Start()
     {
         ownColliders = transform.root.GetComponentsInChildren<Collider>();
         currentAmmo = magazineSize;
         UpdateAmmoUI();
+
+        if (gunModel == null) gunModel = transform;
+        gunStartPos = gunModel.localPosition;
+        gunStartRot = gunModel.localRotation;
     }
 
     void Update()
@@ -44,12 +59,27 @@ public class ProjectileGun : MonoBehaviour
 
     void LateUpdate()
     {
-        if (!fireNextFrame) return;
-        fireNextFrame = false;
+        if (fireNextFrame)
+        {
+            fireNextFrame = false;
 
-        if (PauseMenu.GameIsPaused || Time.timeScale == 0f || isReloading || currentAmmo <= 0) return;
+            if (!(PauseMenu.GameIsPaused || Time.timeScale == 0f || isReloading || currentAmmo <= 0))
+                Shoot();
+        }
 
-        Shoot();
+        ApplyRecoil();
+    }
+
+    void ApplyRecoil()
+    {
+        if (Time.timeScale == 0f) return;
+
+        float k = 1f - Mathf.Exp(-recoilReturnSpeed * Time.deltaTime);
+        recoilPos = Vector3.Lerp(recoilPos, Vector3.zero, k);
+        recoilRot = Vector3.Lerp(recoilRot, Vector3.zero, k);
+
+        gunModel.localPosition = gunStartPos + recoilPos;
+        gunModel.localRotation = gunStartRot * Quaternion.Euler(recoilRot);
     }
 
     IEnumerator Reload()
@@ -72,6 +102,10 @@ public class ProjectileGun : MonoBehaviour
     {
         currentAmmo--;
         UpdateAmmoUI();
+
+        // recoil only happens here, so it never plays while reloading
+        recoilPos += recoilKickPosition;
+        recoilRot += recoilKickRotation;
 
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         Vector3 target = ray.GetPoint(200f);

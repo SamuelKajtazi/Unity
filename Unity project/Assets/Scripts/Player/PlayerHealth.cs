@@ -37,12 +37,6 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth <= 0f) Die();
     }
 
-    public void Heal(float amount)
-    {
-        if (isDead) return;
-        currentHealth = Mathf.Clamp(currentHealth + amount, 0f, maxHealth);
-    }
-
     void Die()
     {
         isDead = true;

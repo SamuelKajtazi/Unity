@@ -2,6 +2,8 @@
 	<assembly fullname="Assembly-CSharp" ignoreIfMissing="1">
 		<type fullname="DeathScreen">
 			<method name="Menu"/>
+			<method name="Menu"/>
+			<method name="Restart"/>
 			<method name="Restart"/>
 		</type>
 		<type fullname="MainMenuManager">
@@ -12,7 +14,10 @@
 		</type>
 		<type fullname="PauseMenu">
 			<method name="LoadMenu"/>
+			<method name="LoadMenu"/>
 			<method name="QuitGame"/>
+			<method name="QuitGame"/>
+			<method name="Resume"/>
 			<method name="Resume"/>
 		</type>
 	</assembly>

@@ -8,7 +8,6 @@ public class DeathScreen : MonoBehaviour
 
     void Awake()
     {
-        // hidden when the game starts
         deathPanel.SetActive(false);
         Time.timeScale = 1f;
     }

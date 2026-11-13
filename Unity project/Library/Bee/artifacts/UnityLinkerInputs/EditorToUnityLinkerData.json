@@ -36,6 +36,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -60,6 +61,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -71,12 +73,27 @@
             "usedInScenes": []
         },
         {
+            "managedAssemblyName": "Assembly-CSharp.dll",
+            "nativeClass": "",
+            "fullManagedTypeName": "KillBrick",
+            "moduleName": "",
+            "usedInScenes": []
+        },
+        {
+            "managedAssemblyName": "Assembly-CSharp.dll",
+            "nativeClass": "",
+            "fullManagedTypeName": "LevelExit",
+            "moduleName": "",
+            "usedInScenes": []
+        },
+        {
             "managedAssemblyName": "",
             "nativeClass": "LevelGameManager",
             "fullManagedTypeName": "",
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -101,6 +118,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -118,6 +136,7 @@
             "moduleName": "AI",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -175,6 +194,13 @@
             "nativeClass": "ShaderNameRegistry",
             "fullManagedTypeName": "",
             "moduleName": "Core",
+            "usedInScenes": []
+        },
+        {
+            "managedAssemblyName": "Assembly-CSharp.dll",
+            "nativeClass": "",
+            "fullManagedTypeName": "SpinAndBob",
+            "moduleName": "",
             "usedInScenes": []
         },
         {
@@ -254,6 +280,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -313,6 +340,7 @@
             "moduleName": "Audio",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -323,6 +351,7 @@
             "moduleName": "Audio",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -333,6 +362,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -342,7 +372,8 @@
             "fullManagedTypeName": "UnityEngine.BoxCollider",
             "moduleName": "Physics",
             "usedInScenes": [
-                "Assets/Scenes/GameScene.unity"
+                "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity"
             ]
         },
         {
@@ -352,6 +383,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -362,6 +394,7 @@
             "moduleName": "UI",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -372,6 +405,7 @@
             "moduleName": "UI",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -381,7 +415,8 @@
             "fullManagedTypeName": "UnityEngine.CapsuleCollider",
             "moduleName": "Physics",
             "usedInScenes": [
-                "Assets/Scenes/GameScene.unity"
+                "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity"
             ]
         },
         {
@@ -390,7 +425,8 @@
             "fullManagedTypeName": "UnityEngine.CharacterController",
             "moduleName": "Physics",
             "usedInScenes": [
-                "Assets/Scenes/GameScene.unity"
+                "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity"
             ]
         },
         {
@@ -399,7 +435,8 @@
             "fullManagedTypeName": "UnityEngine.Collider",
             "moduleName": "Physics",
             "usedInScenes": [
-                "Assets/Scenes/GameScene.unity"
+                "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity"
             ]
         },
         {
@@ -409,6 +446,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -426,6 +464,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -443,6 +482,7 @@
             "moduleName": "TextRendering",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -453,6 +493,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -512,6 +553,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -522,6 +564,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -531,7 +574,8 @@
             "fullManagedTypeName": "UnityEngine.LineRenderer",
             "moduleName": "Core",
             "usedInScenes": [
-                "Assets/Scenes/GameScene.unity"
+                "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity"
             ]
         },
         {
@@ -541,6 +585,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -550,16 +595,8 @@
             "fullManagedTypeName": "UnityEngine.Mesh",
             "moduleName": "Core",
             "usedInScenes": [
-                "Assets/Scenes/GameScene.unity"
-            ]
-        },
-        {
-            "managedAssemblyName": "UnityEngine.dll",
-            "nativeClass": "MeshCollider",
-            "fullManagedTypeName": "UnityEngine.MeshCollider",
-            "moduleName": "Physics",
-            "usedInScenes": [
-                "Assets/Scenes/GameScene.unity"
+                "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity"
             ]
         },
         {
@@ -568,7 +605,8 @@
             "fullManagedTypeName": "UnityEngine.MeshFilter",
             "moduleName": "Core",
             "usedInScenes": [
-                "Assets/Scenes/GameScene.unity"
+                "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity"
             ]
         },
         {
@@ -577,7 +615,8 @@
             "fullManagedTypeName": "UnityEngine.MeshRenderer",
             "moduleName": "Core",
             "usedInScenes": [
-                "Assets/Scenes/GameScene.unity"
+                "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity"
             ]
         },
         {
@@ -587,6 +626,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -597,6 +637,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -614,6 +655,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -623,7 +665,8 @@
             "fullManagedTypeName": "UnityEngine.Renderer",
             "moduleName": "Core",
             "usedInScenes": [
-                "Assets/Scenes/GameScene.unity"
+                "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity"
             ]
         },
         {
@@ -843,6 +886,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -852,7 +896,8 @@
             "fullManagedTypeName": "UnityEngine.Rigidbody",
             "moduleName": "Physics",
             "usedInScenes": [
-                "Assets/Scenes/GameScene.unity"
+                "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity"
             ]
         },
         {
@@ -862,6 +907,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -872,6 +918,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -882,6 +929,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -892,6 +940,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -902,6 +951,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -911,7 +961,8 @@
             "fullManagedTypeName": "UnityEngine.TrailRenderer",
             "moduleName": "Core",
             "usedInScenes": [
-                "Assets/Scenes/GameScene.unity"
+                "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity"
             ]
         },
         {
@@ -921,6 +972,7 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
+                "Assets/Scenes/Level2.unity",
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -956,13 +1008,6 @@
             "managedAssemblyName": "UnityEngine.UI.dll",
             "nativeClass": "",
             "fullManagedTypeName": "UnityEngine.UI.Slider",
-            "moduleName": "",
-            "usedInScenes": []
-        },
-        {
-            "managedAssemblyName": "UnityEngine.UI.dll",
-            "nativeClass": "",
-            "fullManagedTypeName": "UnityEngine.UI.Text",
             "moduleName": "",
             "usedInScenes": []
         },
