@@ -5,9 +5,14 @@ ScriptsOnlyBuild:
     - DeathScreen
     - EnemyChase
     - EnemyHealth
+    - GunHolder
+    - GunPickup
+    - KatanaGrapple
+    - KatanaSwing
     - KillBrick
     - LevelExit
     - MainMenuManager
+    - MoveCamera
     - PauseMenu
     - PlayerHealth
     - PlayerMovement
@@ -66,6 +71,7 @@ ScriptsOnlyBuild:
     - TMPro.TMP_FontAsset
     - TMPro.TMP_Settings
     - TMPro.TMP_StyleSheet
+    - TMPro.TextMeshPro
     - TMPro.TextMeshProUGUI
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
@@ -222,6 +228,21 @@ ScriptsOnlyBuild:
     methodName: QuitGame
   - assembly: Assembly-CSharp
     fullTypeName: DeathScreen
+    methodName: Restart
+  - assembly: Assembly-CSharp
+    fullTypeName: DeathScreen
+    methodName: Menu
+  - assembly: Assembly-CSharp
+    fullTypeName: PauseMenu
+    methodName: QuitGame
+  - assembly: Assembly-CSharp
+    fullTypeName: PauseMenu
+    methodName: LoadMenu
+  - assembly: Assembly-CSharp
+    fullTypeName: PauseMenu
+    methodName: Resume
+  - assembly: Assembly-CSharp
+    fullTypeName: DeathScreen
     methodName: Menu
   - assembly: Assembly-CSharp
     fullTypeName: PauseMenu
@@ -235,21 +256,6 @@ ScriptsOnlyBuild:
   - assembly: Assembly-CSharp
     fullTypeName: PauseMenu
     methodName: Resume
-  - assembly: Assembly-CSharp
-    fullTypeName: PauseMenu
-    methodName: LoadMenu
-  - assembly: Assembly-CSharp
-    fullTypeName: DeathScreen
-    methodName: Restart
-  - assembly: Assembly-CSharp
-    fullTypeName: PauseMenu
-    methodName: QuitGame
-  - assembly: Assembly-CSharp
-    fullTypeName: PauseMenu
-    methodName: Resume
-  - assembly: Assembly-CSharp
-    fullTypeName: DeathScreen
-    methodName: Menu
   sceneClasses:
     Assets/Scenes/GameScene.unity:
     - Class: 1
@@ -278,7 +284,7 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 89
       Script: {instanceID: 0}
-    - Class: 96
+    - Class: 95
       Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
@@ -287,21 +293,23 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {fileID: 11500000, guid: e5038a4feeab87f4591a7740cdc80a25, type: 3}
     - Class: 114
-      Script: {fileID: 11500000, guid: 8639ae0e898fc694db038ad7e3f0a5b0, type: 3}
-    - Class: 114
       Script: {fileID: 11500000, guid: f4e447a09b3473e4fb3c0d811ab32f8e, type: 3}
+    - Class: 114
+      Script: {fileID: 11500000, guid: 1bdfb51bc04f4634589881df828e6c32, type: 3}
+    - Class: 114
+      Script: {fileID: 11500000, guid: 34462e4ef1154d54bab87629c721f329, type: 3}
     - Class: 114
       Script: {fileID: 11500000, guid: e34f8512a7953c8498738e99bceded34, type: 3}
     - Class: 114
       Script: {fileID: 11500000, guid: b5a8795c82632854ba9014bab11f7fa4, type: 3}
+    - Class: 114
+      Script: {fileID: 11500000, guid: 9ba14a2bd11fc9d46a4cf33b3aa2cc24, type: 3}
     - Class: 114
       Script: {fileID: 11500000, guid: e3a37d189d62d7b40ab360761bc332b2, type: 3}
     - Class: 114
       Script: {fileID: 11500000, guid: f9f399bb7ec0f7c4dbf8ca4a3cac2ca4, type: 3}
     - Class: 114
       Script: {fileID: 11500000, guid: 10965dedac33b0b4babb6d8705dbf6a8, type: 3}
-    - Class: 114
-      Script: {fileID: 11500000, guid: 508130b0b062a414cb8e00bf1009a8a4, type: 3}
     - Class: 114
       Script: {fileID: 11500000, guid: c6d7c6281a28e674a9c620c2d2d52213, type: 3}
     - Class: 114
@@ -348,9 +356,9 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 128
       Script: {instanceID: 0}
-    - Class: 136
+    - Class: 134
       Script: {instanceID: 0}
-    - Class: 143
+    - Class: 136
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
@@ -398,7 +406,7 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {fileID: 11500000, guid: 1a6fece1504bccb4280ed3cbd2974c6c, type: 3}
+      Script: {fileID: 11500000, guid: e5038a4feeab87f4591a7740cdc80a25, type: 3}
     - Class: 114
       Script: {fileID: 11500000, guid: 8639ae0e898fc694db038ad7e3f0a5b0, type: 3}
     - Class: 114
@@ -408,7 +416,13 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {fileID: 11500000, guid: 8621b0786afa66c4b954b55b4b2bc9ff, type: 3}
     - Class: 114
+      Script: {fileID: 11500000, guid: 32c5acf21b1310144aaa24f17b8eb6d0, type: 3}
+    - Class: 114
+      Script: {fileID: 11500000, guid: 14fda156d86367044b25eda075e95169, type: 3}
+    - Class: 114
       Script: {fileID: 11500000, guid: e34f8512a7953c8498738e99bceded34, type: 3}
+    - Class: 114
+      Script: {fileID: 11500000, guid: 9ba14a2bd11fc9d46a4cf33b3aa2cc24, type: 3}
     - Class: 114
       Script: {fileID: 11500000, guid: e3a37d189d62d7b40ab360761bc332b2, type: 3}
     - Class: 114
@@ -419,6 +433,8 @@ ScriptsOnlyBuild:
       Script: {fileID: 11500000, guid: 508130b0b062a414cb8e00bf1009a8a4, type: 3}
     - Class: 114
       Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
+    - Class: 114
+      Script: {fileID: 11500000, guid: 9541d86e2fd84c1d9990edf0852d74ab, type: 3}
     - Class: 114
       Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
     - Class: 114
@@ -461,9 +477,9 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 128
       Script: {instanceID: 0}
-    - Class: 136
+    - Class: 134
       Script: {instanceID: 0}
-    - Class: 143
+    - Class: 136
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
@@ -995,6 +1011,12 @@ ScriptsOnlyBuild:
     className: ColorLookup
   - hash:
       serializedVersion: 2
+      Hash: e4aeabf771afe0d403ce60a09083b9b2
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: GunHolder
+  - hash:
+      serializedVersion: 2
       Hash: 915204dac8acad99f076d6e72ada0a0f
     assemblyName: UnityEngine.UI
     namespaceName: UnityEngine.UI
@@ -1095,6 +1117,12 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: DeathScreen
+  - hash:
+      serializedVersion: 2
+      Hash: bf5f39e75fc952ae00df47e8f203c5e5
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: MoveCamera
   - hash:
       serializedVersion: 2
       Hash: 1981decccddfde3e97fcfd6689332a6f
@@ -1211,7 +1239,7 @@ ScriptsOnlyBuild:
     className: DecalProjector
   - hash:
       serializedVersion: 2
-      Hash: 905920fe21e10405288928e60ba915a0
+      Hash: ef15e36322567cdbc5c92d6cf87634a9
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: PlayerMovement
@@ -1433,6 +1461,12 @@ ScriptsOnlyBuild:
     className: TMP_TextSelector_B
   - hash:
       serializedVersion: 2
+      Hash: 54f8e54a252b1f8fa138c775e8f36f35
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: GunPickup
+  - hash:
+      serializedVersion: 2
       Hash: 113e54f67456d0e7754c0598ee2a6dd4
     assemblyName: Unity.RenderPipelines.Core.Runtime
     namespaceName: UnityEngine.Rendering
@@ -1541,7 +1575,7 @@ ScriptsOnlyBuild:
     className: UniversalAdditionalCameraData
   - hash:
       serializedVersion: 2
-      Hash: 4c09a957aa4b40d5453dd90fcd70bd95
+      Hash: af4c065ee8ccd72bdfe8a8fcf221ff28
     assemblyName: Assembly-CSharp
     namespaceName: 
     className: ProjectileGun
@@ -1625,10 +1659,22 @@ ScriptsOnlyBuild:
     className: LevelExit
   - hash:
       serializedVersion: 2
+      Hash: ce55996d479a1cff98532dc8a96ae76a
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: KatanaSwing
+  - hash:
+      serializedVersion: 2
       Hash: dc31d211c7459841fe4f406ae2e51480
     assemblyName: Assembly-CSharp
     namespaceName: TMPro.Examples
     className: TextConsoleSimulator
+  - hash:
+      serializedVersion: 2
+      Hash: 6553bab04666455808fc766e979a0af9
+    assemblyName: Assembly-CSharp
+    namespaceName: 
+    className: KillBrick
   - hash:
       serializedVersion: 2
       Hash: aa349b22cd61b9e8488d736f82590d6b
@@ -1727,14 +1773,14 @@ ScriptsOnlyBuild:
     className: Scrollbar
   - hash:
       serializedVersion: 2
-      Hash: 6553bab04666455808fc766e979a0af9
+      Hash: bb58432ba44986e4546c5bd4c9b7d4a9
     assemblyName: Assembly-CSharp
     namespaceName: 
-    className: KillBrick
+    className: KatanaGrapple
   platform: 19
   scenePathNames:
   - Assets/Scenes/MainMenuScene.unity
   - Assets/Scenes/GameScene.unity
   - Assets/Scenes/Level2.unity
-  nativeClasses: 000000003000000012000000820000001c0000001b000000150000000200000072000000060000003100000073000000090000008100000048000000d50000000d000000c0a2192736010000080000000b000000370000007e0000000f1baa530a05df37130000007bce860a8d0000002f000000740000005e0000002c0100009300000005000000620000001e0000004e0000000400000001000000c4000000140000006c00000059000000800000009d000000e000000003000000de000000df0000006800000051000000b40000002b0000001700000019000000210000003800000041000000880000008f000000360000006000000078000000i
+  nativeClasses: 000000003000000012000000820000001c0000001b000000150000000200000072000000060000003100000073000000090000008100000048000000d50000000d000000c0a2192736010000080000000b000000370000007e0000000f1baa530a05df37130000007bce860a8d0000002f000000740000005e0000002c0100009300000005000000620000001e0000004e0000000400000001000000c4000000140000006c00000059000000800000009d000000e000000003000000de000000df0000006800000051000000b40000002b0000001700000019000000210000005f00000086000000380000004100000088000000360000007800000060000000i
   playerPath: C:/Users/Samuel/Desktop/Unity project/Game/Unity project.exe

@@ -13,7 +13,14 @@ public class ProjectileGun : MonoBehaviour
     public int magazineSize = 7;
     public float reloadTime = 1.5f;
     public KeyCode reloadKey = KeyCode.R;
-    public TextMeshProUGUI ammoText;   // optional, can stay empty
+    public TextMeshProUGUI ammoText;   // optional screen text, can stay empty
+
+    [Header("Gun Screen (3D text on the gun)")]
+    public TMP_Text gunScreenText;     // drag the 3D TextMeshPro that sits on the gun's screen
+    public Color gunScreenColor = new Color(0.2f, 0.6f, 1f);   // normal color (blue)
+    public Color gunScreenLowColor = Color.red;                // color when ammo is low
+    public int lowAmmoAt = 2;
+    public string reloadingText = "...";                       // shown on the gun screen while reloading
 
     [Header("Recoil")]
     public Transform gunModel;          // the part that kicks (leave empty to use this object)
@@ -33,7 +40,14 @@ public class ProjectileGun : MonoBehaviour
 
     void Start()
     {
-        ownColliders = transform.root.GetComponentsInChildren<Collider>();
+        if (cam == null) cam = Camera.main;
+
+        // the player and the camera (with the weapons under it) are separate roots now, ignore both
+        var list = new System.Collections.Generic.List<Collider>(transform.root.GetComponentsInChildren<Collider>());
+        if (cam != null && cam.transform.root != transform.root)
+            list.AddRange(cam.transform.root.GetComponentsInChildren<Collider>());
+        ownColliders = list.ToArray();
+
         currentAmmo = magazineSize;
         UpdateAmmoUI();
 
@@ -90,12 +104,26 @@ public class ProjectileGun : MonoBehaviour
             ammoText.text = "Reloading...";
             ammoText.color = Color.white;
         }
+        if (gunScreenText)
+        {
+            gunScreenText.text = reloadingText;
+            gunScreenText.color = gunScreenColor;
+        }
 
         yield return new WaitForSeconds(reloadTime);
 
         currentAmmo = magazineSize;
         isReloading = false;
         UpdateAmmoUI();
+    }
+
+    // true if this object belongs to the player or the camera/weapons
+    bool IsOwn(Transform t)
+    {
+        Transform root = t.root;
+        if (root == transform.root) return true;
+        if (cam != null && root == cam.transform.root) return true;
+        return false;
     }
 
     void Shoot()
@@ -113,7 +141,7 @@ public class ProjectileGun : MonoBehaviour
 
         foreach (RaycastHit h in Physics.RaycastAll(ray, 200f, ~0, QueryTriggerInteraction.Ignore))
         {
-            if (h.transform.root == transform.root) continue;
+            if (IsOwn(h.transform)) continue;
             if (h.distance < closest)
             {
                 closest = h.distance;
@@ -128,8 +156,11 @@ public class ProjectileGun : MonoBehaviour
         GameObject bullet = Instantiate(bulletPrefab, muzzle.position, Quaternion.LookRotation(direction));
 
         Collider bulletCol = bullet.GetComponent<Collider>();
-        foreach (Collider c in ownColliders)
-            Physics.IgnoreCollision(bulletCol, c);
+        if (bulletCol != null)
+        {
+            foreach (Collider c in ownColliders)
+                if (c != null) Physics.IgnoreCollision(bulletCol, c);
+        }
 
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
         rb.useGravity = false;
@@ -142,8 +173,16 @@ public class ProjectileGun : MonoBehaviour
 
     void UpdateAmmoUI()
     {
-        if (!ammoText) return;
-        ammoText.text = currentAmmo + " / " + magazineSize;
-        ammoText.color = currentAmmo <= 2 ? Color.red : Color.white;
+        if (ammoText)
+        {
+            ammoText.text = currentAmmo + " / " + magazineSize;
+            ammoText.color = currentAmmo <= lowAmmoAt ? Color.red : Color.white;
+        }
+
+        if (gunScreenText)
+        {
+            gunScreenText.text = currentAmmo.ToString();
+            gunScreenText.color = currentAmmo <= lowAmmoAt ? gunScreenLowColor : gunScreenColor;
+        }
     }
 }

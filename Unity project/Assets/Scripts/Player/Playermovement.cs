@@ -1,483 +1,536 @@
+// PlayerMovement
+using System;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
-    public Camera playerCamera;
-    public Transform playerBody;                // drag your visible capsule/model here
-    public float walkSpeed = 6f;
-    public float runSpeed = 12f;
-    public float jumpPower = 7f;
-    public float gravity = 20f;
-    public float lookSpeed = 2f;
-    public float lookXLimit = 85f;
-    public float defaultHeight = 2f;
-    public float crouchHeight = 1f;
-    public float crouchSpeed = 3f;
+    [Header("Assignables")]
+    //Assignables
+    public Transform playerCam;
+    public Transform orientation;
+    private Collider playerCollider;
+    public Rigidbody rb;
+    private Camera cam;
 
-    [Header("Sprint FOV")]
-    public float sprintFovBoost = 4f;           // how many degrees the FOV grows while sprinting (3 to 5 feels good)
-    public float fovChangeSpeed = 8f;           // how fast the FOV changes (higher = snappier)
+    [Space(10)]
 
-    [Header("Ground Movement")]
-    public float groundAcceleration = 45f;      // speeding up (12 / 45 = about 0.27s to full run speed)
-    public float counterAcceleration = 70f;     // cancels sideways and backwards velocity when turning or reversing
-    public float stopDeceleration = 50f;        // how fast you stop when you release the keys
-    public float overspeedDeceleration = 6f;    // slow bleed when you're above run speed (keeps slide/jump momentum)
-    [Range(0f, 1f)]
-    public float overspeedCounterMultiplier = 0.25f;  // counter force while above run speed (low = keep momentum through turns)
+    public LayerMask whatIsGround;
+    public LayerMask whatIsWallrunnable;
 
-    [Header("Air Movement")]
-    public float airAcceleration = 8f;          // steering in the air
-    public float airDrag = 0.3f;                // slowdown in the air with no input
-    public float maxSpeed = 30f;                // top speed you can reach by chaining slides and jumps
+    [Header("MovementSettings")]
+    //Movement Settings
+    public float sensitivity = 1.5f;        // loaded from the main menu (PlayerPrefs "Sensitivity")
+    public float moveSpeed = 4500f;
+    public float walkSpeed = 20f;
+    public float runSpeed = 10f;
+    public bool grounded;
+    public bool onWall;
 
-    [Header("Momentum Jump")]
-    public float speedToJumpHeight = 0.25f;     // extra jump power per unit of speed above run speed
-    public float maxJumpBonus = 6f;             // cap on the extra jump power (jumpPower + this = highest jump)
-    public float jumpForwardBoost = 2.5f;       // speed ADDED in your movement direction on every jump (more distance)
-    public float slideJumpBoost = 3f;           // extra speed added when you jump out of a slide
+    [Header("Crouch")]
+    public float crouchHeight = 1f;         // how tall you are while crouching (world units, standing height comes from the collider)
 
-    [Header("Slide")]
-    public float slideSpeed = 16f;              // minimum speed at the start of a slide
-    public float slideBoost = 4f;               // speed ADDED every time you start a slide
-    public float slideFriction = 2f;            // lower = longer slide
-    public float slideBufferTime = 0.3f;        // press crouch this long before landing and the slide starts on landing
+    //Private Floats
+    private float wallRunGravity = 1f;
+    private float maxSlopeAngle = 35f;
+    private float wallRunRotation;
+    private float slideSlowdown = 0.2f;
+    private float actualWallRotation;
+    private float wallRotationVel;
+    private float desiredX;
+    private float xRotation;
+    private float sensMultiplier = 1f;
+    private float jumpCooldown = 0.25f;
+    private float jumpForce = 550f;
+    private float x;
+    private float y;
+    private float vel;
 
-    [Header("Wall Run")]
-    public string wallObjectName = "WallRun";   // only objects with exactly this name can be wall run
-    public float wallCheckDistance = 1.2f;      // HOW CLOSE you need to be (reach = this + capsule radius)
-    public float wallTapWindow = 0.25f;         // how long a tap of A/D counts (makes timing forgiving)
-    public float wallRunSpeed = 14f;            // minimum speed while on the wall
-    public float minWallRunEntrySpeed = 4f;     // you need this much speed to start a wall run
-    public float minWallRunHeight = 1.2f;       // you must be this high above the ground to start
-    public float wallRunMaxTime = 2.5f;         // how long you can stay on the wall
-    public float wallRunGravityMultiplier = 0.1f; // 0 = no gravity, 1 = normal gravity
-    public float wallStickForce = 1.5f;         // small push into the wall so you stay attached
-    public float wallJumpUpForce = 8f;          // upward speed when you jump off the wall
-    public float wallJumpSideForce = 9f;        // push away from the wall when you jump off
-    public float wallRunCooldown = 0.3f;        // delay before you can grab a wall again
-    public float wallRunCamTilt = 12f;          // camera roll while wall running (flip the sign if it tilts the wrong way)
+    //Crouch
+    private Vector3 standScale;
+    private Vector3 crouchScale;
+    private float standHeight;              // standing height in world units
+    private float crouchShift;              // how far to move down/up so your feet stay on the floor
 
-    private Vector3 velocity = Vector3.zero;    // horizontal momentum
-    private float verticalVelocity = 0f;
-    private float rotationX = 0;
-    private CharacterController characterController;
+    //Private bools
+    private bool readyToJump;
+    private bool jumping;
+    private bool sprinting;
+    private bool crouching;
+    private bool wallRunning;
+    private bool cancelling;
+    private bool readyToWallrun = true;
+    private bool airborne;
+    private bool onGround;
+    private bool surfing;
+    private bool cancellingGrounded;
+    private bool cancellingWall;
+    private bool cancellingSurf;
 
-    private bool canMove = true;
+    //Private Vector3's
+    private Vector3 grapplePoint;
+    private Vector3 normalVector;
+    private Vector3 wallNormalVector;
+    private Vector3 wallRunPos;
+    private Vector3 previousLookdir;
 
-    private bool isSliding = false;
-    private float slideBuffer = 0f;
+    //Private int
+    private int nw;
 
-    private bool isWallRunning = false;
-    private bool wallSideRight = false;
-    private float wallRunTimer = 0f;
-    private float wallRunCooldownTimer = 0f;
-    private float camTilt = 0f;
-    private Vector3 wallRunDir = Vector3.forward;   // direction we're running along the wall
-    private float tapLeftTimer = 0f;
-    private float tapRightTimer = 0f;
+    //Instance
+    public static PlayerMovement Instance { get; private set; }
 
-    private float cameraStandY;                 // camera height when standing
-    private Vector3 controllerStandCenter;      // original CharacterController center
-    private float baseFov;                      // FOV from the menu setting
-
-    // extra capsule colliders on the player that need to shrink too
-    private CapsuleCollider[] extraColliders;
-    private float[] extraStandHeights;
-    private Vector3[] extraStandCenters;
-
-    void Start()
+    private void Awake()
     {
-        characterController = GetComponent<CharacterController>();
+        Instance = this;
+        rb = GetComponent<Rigidbody>();
+    }
+
+    private void Start()
+    {
+        playerCollider = GetComponent<Collider>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        readyToJump = true;
+        wallNormalVector = Vector3.up;
 
-        cameraStandY = playerCamera.transform.localPosition.y;
-        controllerStandCenter = characterController.center;
-
-        // find extra CapsuleColliders (skip ones under playerBody, those already shrink with its scale)
-        CapsuleCollider[] all = GetComponentsInChildren<CapsuleCollider>();
-        var list = new System.Collections.Generic.List<CapsuleCollider>();
-        foreach (var col in all)
-        {
-            if (playerBody != null && col.transform.IsChildOf(playerBody)) continue;
-            list.Add(col);
-        }
-        extraColliders = list.ToArray();
-        extraStandHeights = new float[extraColliders.Length];
-        extraStandCenters = new Vector3[extraColliders.Length];
-        for (int i = 0; i < extraColliders.Length; i++)
-        {
-            extraStandHeights[i] = extraColliders[i].height;
-            extraStandCenters[i] = extraColliders[i].center;
-        }
+        // remember the standing size
+        standScale = transform.localScale;
+        standHeight = playerCollider.bounds.size.y;
 
         // settings saved from the main menu
-        lookSpeed = PlayerPrefs.GetFloat("Sensitivity", 2f);
-        baseFov = PlayerPrefs.GetFloat("FOV", 60f);
-        playerCamera.fieldOfView = baseFov;
+        sensitivity = PlayerPrefs.GetFloat("Sensitivity", 1.5f);
+
+        cam = playerCam.GetComponent<Camera>();
+        if (cam == null) cam = playerCam.GetComponentInChildren<Camera>();
+        if (cam != null) cam.fieldOfView = PlayerPrefs.GetFloat("FOV", 60f);
     }
 
-    // raycast that ignores every collider on the player (so we never hit ourselves)
-    private bool RaycastNoSelf(Vector3 origin, Vector3 direction, float distance, out RaycastHit best)
+    private void LateUpdate()
     {
-        best = default;
-        bool found = false;
-        float closest = float.MaxValue;
+        if (Time.timeScale == 0f || PauseMenu.GameIsPaused) return;
 
-        RaycastHit[] hits = Physics.RaycastAll(origin, direction, distance, ~0, QueryTriggerInteraction.Ignore);
-        foreach (RaycastHit h in hits)
+        //For wallrunning
+        WallRunning();
+    }
+
+    private void FixedUpdate()
+    {
+        //For moving
+        Movement();
+    }
+
+    private void Update()
+    {
+        // paused or dead (death screen sets timeScale to 0): no input, no looking
+        if (Time.timeScale == 0f || PauseMenu.GameIsPaused) return;
+
+        //Input
+        MyInput();
+        //Looking around
+        Look();
+    }
+
+    //Player input
+    private void MyInput()
+    {
+        x = Input.GetAxisRaw("Horizontal");
+        y = Input.GetAxisRaw("Vertical");
+        jumping = Input.GetButton("Jump");
+        crouching = Input.GetKey(KeyCode.LeftShift);
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            if (h.collider.transform.IsChildOf(transform)) continue;   // part of the player, skip
-            if (h.distance < closest)
+            StartCrouch();
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            StopCrouch();
+        }
+    }
+
+    //Scale player down (feet stay on the floor)
+    private void StartCrouch()
+    {
+        // worked out here so you can change Crouch Height while playing
+        float crouchH = Mathf.Clamp(crouchHeight, 0.2f, standHeight);
+        crouchScale = new Vector3(standScale.x, standScale.y * crouchH / standHeight, standScale.z);
+        crouchShift = (standHeight - crouchH) * 0.5f;
+
+        float num = 400f;
+        base.transform.localScale = crouchScale;
+        base.transform.position = new Vector3(base.transform.position.x, base.transform.position.y - crouchShift, base.transform.position.z);
+        if (rb.velocity.magnitude > 0.1f && grounded)
+        {
+            rb.AddForce(orientation.transform.forward * num);
+        }
+    }
+
+    //Scale player to original size (feet stay on the floor)
+    private void StopCrouch()
+    {
+        base.transform.localScale = standScale;
+        base.transform.position = new Vector3(base.transform.position.x, base.transform.position.y + crouchShift, base.transform.position.z);
+    }
+
+    //Moving around with WASD
+    private void Movement()
+    {
+        rb.AddForce(Vector3.down * Time.deltaTime * 10f);
+        Vector2 mag = FindVelRelativeToLook();
+        float num = mag.x;
+        float num2 = mag.y;
+        CounterMovement(x, y, mag);
+        if (readyToJump && jumping)
+        {
+            Jump();
+        }
+        float num3 = walkSpeed;
+        if (sprinting)
+        {
+            num3 = runSpeed;
+        }
+        if (crouching && grounded && readyToJump)
+        {
+            rb.AddForce(Vector3.down * Time.deltaTime * 3000f);
+            return;
+        }
+        if (x > 0f && num > num3)
+        {
+            x = 0f;
+        }
+        if (x < 0f && num < 0f - num3)
+        {
+            x = 0f;
+        }
+        if (y > 0f && num2 > num3)
+        {
+            y = 0f;
+        }
+        if (y < 0f && num2 < 0f - num3)
+        {
+            y = 0f;
+        }
+        float num4 = 1f;
+        float num5 = 1f;
+        if (!grounded)
+        {
+            num4 = 0.5f;
+            num5 = 0.5f;
+        }
+        if (grounded && crouching)
+        {
+            num5 = 0f;
+        }
+        if (wallRunning)
+        {
+            num5 = 0.3f;
+            num4 = 0.3f;
+        }
+        if (surfing)
+        {
+            num4 = 0.7f;
+            num5 = 0.3f;
+        }
+        rb.AddForce(orientation.transform.forward * y * moveSpeed * Time.deltaTime * num4 * num5);
+        rb.AddForce(orientation.transform.right * x * moveSpeed * Time.deltaTime * num4);
+    }
+
+    //Ready to jump again
+    private void ResetJump()
+    {
+        readyToJump = true;
+    }
+
+    //Player go fly
+    private void Jump()
+    {
+        if ((grounded || wallRunning || surfing) && readyToJump)
+        {
+            Vector3 velocity = rb.velocity;
+            readyToJump = false;
+            rb.AddForce(Vector2.up * jumpForce * 1.5f);
+            rb.AddForce(normalVector * jumpForce * 0.5f);
+            if (rb.velocity.y < 0.5f)
             {
-                closest = h.distance;
-                best = h;
-                found = true;
+                rb.velocity = new Vector3(velocity.x, 0f, velocity.z);
+            }
+            else if (rb.velocity.y > 0f)
+            {
+                rb.velocity = new Vector3(velocity.x, velocity.y / 2f, velocity.z);
+            }
+            if (wallRunning)
+            {
+                rb.AddForce(wallNormalVector * jumpForce * 3f);
+            }
+            Invoke("ResetJump", jumpCooldown);
+            if (wallRunning)
+            {
+                wallRunning = false;
             }
         }
-        return found;
     }
 
-    // looks around you (sides + front diagonals + front) for the closest wall named wallObjectName
-    // sideDot: how far to the right (+) or left (-) of you the wall is. Near 0 = head-on.
-    private bool FindWall(out Vector3 normal, out bool onRight, out float sideDot)
+    //Looking around by using your mouse
+    private void Look()
     {
-        normal = Vector3.zero;
-        onRight = false;
-        sideDot = 0f;
-
-        Vector3 origin = transform.position + characterController.center;
-        float dist = characterController.radius + wallCheckDistance;
-
-        Vector3 f = transform.forward;
-        Vector3 r = transform.right;
-        Vector3[] dirs =
-        {
-            r, -r,
-            (f + r).normalized, (f - r).normalized,
-            f
-        };
-
-        bool found = false;
-        float bestDist = float.MaxValue;
-
-        foreach (Vector3 d in dirs)
-        {
-            RaycastHit hit;
-            if (!RaycastNoSelf(origin, d, dist, out hit)) continue;
-            if (hit.collider.gameObject.name != wallObjectName) continue;
-            if (Mathf.Abs(hit.normal.y) > 0.3f) continue;            // only vertical walls
-
-            if (hit.distance < bestDist)
-            {
-                bestDist = hit.distance;
-                normal = hit.normal;
-                Vector3 toWall = (hit.point - origin);
-                toWall.y = 0f;
-                toWall = toWall.normalized;
-                sideDot = Vector3.Dot(toWall, r);
-                onRight = sideDot >= 0f;
-                found = true;
-            }
-        }
-
-        return found;
+        float num = Input.GetAxis("Mouse X") * sensitivity * sensMultiplier;
+        float num2 = Input.GetAxis("Mouse Y") * sensitivity * sensMultiplier;
+        desiredX = playerCam.transform.localRotation.eulerAngles.y + num;
+        xRotation -= num2;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        FindWallRunRotation();
+        actualWallRotation = Mathf.SmoothDamp(actualWallRotation, wallRunRotation, ref wallRotationVel, 0.2f);
+        playerCam.transform.localRotation = Quaternion.Euler(xRotation, desiredX, actualWallRotation);
+        orientation.transform.localRotation = Quaternion.Euler(0f, desiredX, 0f);
     }
 
-    void Update()
+    //Make the player movement feel good
+    private void CounterMovement(float x, float y, Vector2 mag)
     {
-        if (Time.timeScale == 0f) return;   // dead or paused: no movement
-
-        bool grounded = characterController.isGrounded;
-
-        Vector3 forward = transform.TransformDirection(Vector3.forward);
-        Vector3 right = transform.TransformDirection(Vector3.right);
-
-        float inputV = canMove ? Input.GetAxis("Vertical") : 0;
-        float inputH = canMove ? Input.GetAxis("Horizontal") : 0;
-        bool hasInput = new Vector2(inputH, inputV).sqrMagnitude > 0.01f;
-
-        bool crouchHeld = Input.GetKey(KeyCode.LeftControl) && canMove;
-        bool crouchPressed = Input.GetKeyDown(KeyCode.LeftControl) && canMove;
-        bool sprintHeld = Input.GetKey(KeyCode.LeftShift);
-        bool jumpPressed = Input.GetButton("Jump") && canMove && grounded;
-
-        float horizontalSpeed = new Vector3(velocity.x, 0, velocity.z).magnitude;
-
-        // ---------- slide buffer: pressing crouch in the air slides you on landing ----------
-        if (crouchPressed && !grounded) slideBuffer = slideBufferTime;
-        if (slideBuffer > 0f) slideBuffer -= Time.deltaTime;
-
-        bool wantsSlide = crouchPressed || (slideBuffer > 0f && crouchHeld);
-
-        // start a slide: grounded + already moving fast. Every slide ADDS speed.
-        if (wantsSlide && grounded && !isSliding && horizontalSpeed > walkSpeed + 1f)
+        if (!grounded || jumping)
         {
-            isSliding = true;
-            slideBuffer = 0f;
-            Vector3 dir = new Vector3(velocity.x, 0, velocity.z).normalized;
-            float newSpeed = Mathf.Max(horizontalSpeed, slideSpeed) + slideBoost;
-            velocity = dir * Mathf.Min(newSpeed, maxSpeed);
+            return;
         }
-
-        // end a slide: crouch released, jumped out of it, or slowed down enough
-        bool jumpedOutOfSlide = false;
-        if (isSliding && (!crouchHeld || jumpPressed || horizontalSpeed <= crouchSpeed + 0.5f))
+        float num = 0.16f;
+        float num2 = 0.01f;
+        if (crouching)
         {
-            jumpedOutOfSlide = jumpPressed;
-            isSliding = false;
+            rb.AddForce(moveSpeed * Time.deltaTime * -rb.velocity.normalized * slideSlowdown);
+            return;
         }
-
-        bool crouching = crouchHeld || isSliding;
-        bool isRunning = sprintHeld && !crouching;
-        float currentSpeed = crouching ? crouchSpeed : isRunning ? runSpeed : walkSpeed;
-
-        // ---------- wall running ----------
-        if (wallRunCooldownTimer > 0f) wallRunCooldownTimer -= Time.deltaTime;
-
-        // remember taps of A / D for a short time so the timing is forgiving
-        if (canMove && Input.GetKeyDown(KeyCode.A)) tapLeftTimer = wallTapWindow;
-        if (canMove && Input.GetKeyDown(KeyCode.D)) tapRightTimer = wallTapWindow;
-        if (tapLeftTimer > 0f) tapLeftTimer -= Time.deltaTime;
-        if (tapRightTimer > 0f) tapRightTimer -= Time.deltaTime;
-
-        Vector3 wallNormal = Vector3.zero;
-        Vector3 wallForward = Vector3.zero;
-        bool wallOnRight = false;
-        float wallSideDot = 0f;
-        bool foundWall = !grounded && FindWall(out wallNormal, out wallOnRight, out wallSideDot);
-
-        if (foundWall)
+        if ((Math.Abs(mag.x) > num2 && Math.Abs(x) < 0.05f) || (mag.x < 0f - num2 && x > 0f) || (mag.x > num2 && x < 0f))
         {
-            // direction along the wall: the way you're running (or the way you're moving / facing when starting)
-            wallForward = Vector3.Cross(wallNormal, Vector3.up).normalized;
-
-            Vector3 reference;
-            if (isWallRunning)
-                reference = wallRunDir;
-            else if (horizontalSpeed > 0.5f)
-                reference = new Vector3(velocity.x, 0f, velocity.z);
-            else
-                reference = forward;
-
-            if (Vector3.Dot(wallForward, reference) < 0f) wallForward = -wallForward;
+            rb.AddForce(moveSpeed * orientation.transform.right * Time.deltaTime * (0f - mag.x) * num);
         }
-
-        Vector3 bodyCenter = transform.position + characterController.center;
-        RaycastHit tmpHit;
-
-        if (!isWallRunning)
+        if ((Math.Abs(mag.y) > num2 && Math.Abs(y) < 0.05f) || (mag.y < 0f - num2 && y > 0f) || (mag.y > num2 && y < 0f))
         {
-            bool highEnough = !RaycastNoSelf(bodyCenter, Vector3.down,
-                characterController.height / 2f + minWallRunHeight, out tmpHit);
+            rb.AddForce(moveSpeed * orientation.transform.forward * Time.deltaTime * (0f - mag.y) * num);
+        }
+        if (Mathf.Sqrt(Mathf.Pow(rb.velocity.x, 2f) + Mathf.Pow(rb.velocity.z, 2f)) > walkSpeed)
+        {
+            float num3 = rb.velocity.y;
+            Vector3 vector = rb.velocity.normalized * walkSpeed;
+            rb.velocity = new Vector3(vector.x, num3, vector.z);
+        }
+    }
 
-            // tap A for a wall on your left, D for a wall on your right (head-on: either works)
-            bool headOn = Mathf.Abs(wallSideDot) < 0.2f;
-            bool tapOK = headOn ? (tapLeftTimer > 0f || tapRightTimer > 0f)
-                                : (wallOnRight ? tapRightTimer > 0f : tapLeftTimer > 0f);
+    public Vector2 FindVelRelativeToLook()
+    {
+        float current = orientation.transform.eulerAngles.y;
+        float target = Mathf.Atan2(rb.velocity.x, rb.velocity.z) * 57.29578f;
+        float num = Mathf.DeltaAngle(current, target);
+        float num2 = 90f - num;
+        float magnitude = rb.velocity.magnitude;
+        return new Vector2(y: magnitude * Mathf.Cos(num * ((float)Math.PI / 180f)), x: magnitude * Mathf.Cos(num2 * ((float)Math.PI / 180f)));
+    }
 
-            if (foundWall && highEnough && tapOK && horizontalSpeed > minWallRunEntrySpeed
-                && !crouching && wallRunCooldownTimer <= 0f)
+    private void FindWallRunRotation()
+    {
+        if (!wallRunning)
+        {
+            wallRunRotation = 0f;
+            return;
+        }
+        _ = new Vector3(0f, playerCam.transform.rotation.y, 0f).normalized;
+        new Vector3(0f, 0f, 1f);
+        float num = 0f;
+        float current = playerCam.transform.rotation.eulerAngles.y;
+        if (Math.Abs(wallNormalVector.x - 1f) < 0.1f)
+        {
+            num = 90f;
+        }
+        else if (Math.Abs(wallNormalVector.x - -1f) < 0.1f)
+        {
+            num = 270f;
+        }
+        else if (Math.Abs(wallNormalVector.z - 1f) < 0.1f)
+        {
+            num = 0f;
+        }
+        else if (Math.Abs(wallNormalVector.z - -1f) < 0.1f)
+        {
+            num = 180f;
+        }
+        num = Vector3.SignedAngle(new Vector3(0f, 0f, 1f), wallNormalVector, Vector3.up);
+        float num2 = Mathf.DeltaAngle(current, num);
+        wallRunRotation = (0f - num2 / 90f) * 15f;
+        if (!readyToWallrun)
+        {
+            return;
+        }
+        if ((Mathf.Abs(wallRunRotation) < 4f && y > 0f && Math.Abs(x) < 0.1f) || (Mathf.Abs(wallRunRotation) > 22f && y < 0f && Math.Abs(x) < 0.1f))
+        {
+            if (!cancelling)
             {
-                isWallRunning = true;
-                isSliding = false;
-                wallRunTimer = 0f;
-                wallSideRight = headOn ? (tapRightTimer > 0f) : wallOnRight;
-                wallRunDir = wallForward;
-                tapLeftTimer = 0f;
-                tapRightTimer = 0f;
-                if (verticalVelocity < 0f) verticalVelocity = 0f;   // catch the wall instead of falling
+                cancelling = true;
+                CancelInvoke("CancelWallrun");
+                Invoke("CancelWallrun", 0.2f);
             }
         }
         else
         {
-            wallRunTimer += Time.deltaTime;
-            bool blockedAhead = foundWall && RaycastNoSelf(bodyCenter, wallForward,
-                characterController.radius + 0.4f, out tmpHit);
+            cancelling = false;
+            CancelInvoke("CancelWallrun");
+        }
+    }
 
-            if (!foundWall || grounded || wallRunTimer > wallRunMaxTime
-                || blockedAhead || horizontalSpeed < 2f || crouchHeld)
+    private void CancelWallrun()
+    {
+        Invoke("GetReadyToWallrun", 0.1f);
+        rb.AddForce(wallNormalVector * 600f);
+        readyToWallrun = false;
+    }
+
+    private void GetReadyToWallrun()
+    {
+        readyToWallrun = true;
+    }
+
+    private void WallRunning()
+    {
+        if (wallRunning)
+        {
+            rb.AddForce(-wallNormalVector * Time.deltaTime * moveSpeed);
+            rb.AddForce(Vector3.up * Time.deltaTime * rb.mass * 100f * wallRunGravity);
+        }
+    }
+
+    private bool IsFloor(Vector3 v)
+    {
+        return Vector3.Angle(Vector3.up, v) < maxSlopeAngle;
+    }
+
+    private bool IsSurf(Vector3 v)
+    {
+        float num = Vector3.Angle(Vector3.up, v);
+        if (num < 89f)
+        {
+            return num > maxSlopeAngle;
+        }
+        return false;
+    }
+
+    private bool IsWall(Vector3 v)
+    {
+        return Math.Abs(90f - Vector3.Angle(Vector3.up, v)) < 0.1f;
+    }
+
+    private bool IsRoof(Vector3 v)
+    {
+        return v.y == -1f;
+    }
+
+    private void StartWallRun(Vector3 normal)
+    {
+        if (!grounded && readyToWallrun)
+        {
+            wallNormalVector = normal;
+            float num = 20f;
+            if (!wallRunning)
             {
-                // fell off, ran out of time, hit something, or let go
-                isWallRunning = false;
-                wallRunCooldownTimer = wallRunCooldown;
+                rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+                rb.AddForce(Vector3.up * num, ForceMode.Impulse);
             }
-            else if (Input.GetButtonDown("Jump") && canMove)
+            wallRunning = true;
+        }
+    }
+
+    private void OnCollisionStay(Collision other)
+    {
+        int layer = other.gameObject.layer;
+        if ((int)whatIsGround != ((int)whatIsGround | (1 << layer)))
+        {
+            return;
+        }
+        for (int i = 0; i < other.contactCount; i++)
+        {
+            Vector3 normal = other.contacts[i].normal;
+            if (IsFloor(normal))
             {
-                // wall jump: keep your speed along the wall, push away from it, go up
-                float along = Mathf.Max(Vector3.Dot(velocity, wallForward), 0f);
-                Vector3 jumpVel = wallForward * along + wallNormal * wallJumpSideForce;
-                if (jumpVel.magnitude > maxSpeed) jumpVel = jumpVel.normalized * maxSpeed;
-
-                velocity = new Vector3(jumpVel.x, 0f, jumpVel.z);
-                verticalVelocity = wallJumpUpForce;
-                horizontalSpeed = velocity.magnitude;
-
-                isWallRunning = false;
-                wallRunCooldownTimer = wallRunCooldown;
+                if (wallRunning)
+                {
+                    wallRunning = false;
+                }
+                grounded = true;
+                normalVector = normal;
+                cancellingGrounded = false;
+                CancelInvoke("StopGrounded");
             }
-            else
+            if (IsWall(normal) && layer == LayerMask.NameToLayer("Ground"))
             {
-                wallRunDir = wallForward;
-                wallSideRight = Vector3.Dot(-wallNormal, right) >= 0f;
+                StartWallRun(normal);
+                onWall = true;
+                cancellingWall = false;
+                CancelInvoke("StopWall");
             }
-        }
-
-        // ---------- horizontal movement ----------
-        Vector3 wishDir = Vector3.ClampMagnitude((forward * inputV) + (right * inputH), 1f);
-
-        if (isWallRunning)
-        {
-            // run along the wall with a small push into it so you stay attached
-            float along = Mathf.Max(Vector3.Dot(velocity, wallForward), wallRunSpeed);
-            along = Mathf.Min(along, maxSpeed);
-            Vector3 v = wallForward * along - wallNormal * wallStickForce;
-            velocity = new Vector3(v.x, 0f, v.z);
-        }
-        else if (isSliding)
-        {
-            // friction slowly eats the slide's momentum
-            velocity = Vector3.MoveTowards(velocity, Vector3.zero, slideFriction * Time.deltaTime);
-        }
-        else if (grounded)
-        {
-            bool overspeed = horizontalSpeed > runSpeed + 0.5f;
-
-            if (hasInput)
+            if (IsSurf(normal))
             {
-                Vector3 dir = wishDir.normalized;
-                float targetSpeed = currentSpeed * wishDir.magnitude;
-
-                // split velocity into the part along your input and the part sideways
-                float along = Vector3.Dot(velocity, dir);
-                Vector3 lateral = velocity - dir * along;
-
-                float counter = counterAcceleration * (overspeed ? overspeedCounterMultiplier : 1f);
-
-                // counter momentum: cancel sideways drift fast
-                lateral = Vector3.MoveTowards(lateral, Vector3.zero, counter * Time.deltaTime);
-
-                if (along < 0f)
-                    along = Mathf.MoveTowards(along, targetSpeed, counter * Time.deltaTime);                // reversing: strong counter
-                else if (along < targetSpeed)
-                    along = Mathf.MoveTowards(along, targetSpeed, groundAcceleration * Time.deltaTime);     // speeding up
-                else
-                    along = Mathf.MoveTowards(along, targetSpeed, overspeedDeceleration * Time.deltaTime);  // slow bleed above target
-
-                velocity = dir * along + lateral;
+                surfing = true;
+                cancellingSurf = false;
+                CancelInvoke("StopSurf");
             }
-            else
-            {
-                // no input: counter your own velocity to stop quickly (slowly if you have slide/jump speed)
-                float decel = overspeed ? overspeedDeceleration : stopDeceleration;
-                velocity = Vector3.MoveTowards(velocity, Vector3.zero, decel * Time.deltaTime);
-            }
+            IsRoof(normal);
         }
-        else
+        float num = 3f;
+        if (!cancellingGrounded)
         {
-            // in the air: keep your speed, only steer
-            if (hasInput)
-            {
-                float limit = Mathf.Max(horizontalSpeed, currentSpeed);
-                velocity += wishDir * airAcceleration * Time.deltaTime;
-                if (velocity.magnitude > limit)
-                    velocity = velocity.normalized * limit;
-            }
-            else
-            {
-                velocity = Vector3.MoveTowards(velocity, Vector3.zero, airDrag * Time.deltaTime);
-            }
+            cancellingGrounded = true;
+            Invoke("StopGrounded", Time.deltaTime * num);
         }
-
-        // ---------- vertical + momentum jump ----------
-        if (jumpPressed)
+        if (!cancellingWall)
         {
-            float speedNow = new Vector3(velocity.x, 0, velocity.z).magnitude;
-
-            // faster = higher jump
-            float speedAboveRun = Mathf.Max(0f, speedNow - runSpeed);
-            float jumpBonus = Mathf.Min(speedAboveRun * speedToJumpHeight, maxJumpBonus);
-            verticalVelocity = jumpPower + jumpBonus;
-
-            // faster = further jump: add speed in the direction you're already moving
-            if (speedNow > walkSpeed)
-            {
-                Vector3 dir = new Vector3(velocity.x, 0, velocity.z).normalized;
-                float boost = jumpForwardBoost + (jumpedOutOfSlide ? slideJumpBoost : 0f);
-                velocity = dir * Mathf.Min(speedNow + boost, maxSpeed);
-            }
+            cancellingWall = true;
+            Invoke("StopWall", Time.deltaTime * num);
         }
-        else if (isWallRunning)
-            verticalVelocity -= gravity * wallRunGravityMultiplier * Time.deltaTime;   // very light gravity on the wall
-        else if (grounded && verticalVelocity < 0)
-            verticalVelocity = -2f;   // small push down keeps isGrounded stable
-        else if (!grounded)
-            verticalVelocity -= gravity * Time.deltaTime;
-
-        // ---------- crouch / slide hitbox: shrink from the top so your feet stay on the ground ----------
-        float targetHeight = crouching ? crouchHeight : defaultHeight;
-
-        // trying to stand up: stay crouched if something is above you
-        if (targetHeight > characterController.height)
+        if (!cancellingSurf)
         {
-            float insideTop = 0.05f; // start the ray slightly inside our own capsule
-            Vector3 top = transform.position + characterController.center
-                          + Vector3.up * (characterController.height / 2f - insideTop);
-            float checkDistance = (defaultHeight - characterController.height) + insideTop;
-
-            if (RaycastNoSelf(top, Vector3.up, checkDistance, out tmpHit))
-                targetHeight = characterController.height;   // blocked, stay as you are
+            cancellingSurf = true;
+            Invoke("StopSurf", Time.deltaTime * num);
         }
+    }
 
-        float heightDiff = targetHeight - defaultHeight;   // 0 standing, negative crouching
+    private void StopGrounded()
+    {
+        grounded = false;
+    }
 
-        characterController.height = targetHeight;
-        characterController.center = controllerStandCenter + new Vector3(0f, heightDiff / 2f, 0f);
+    private void StopWall()
+    {
+        onWall = false;
+        wallRunning = false;
+    }
 
-        // shrink any extra capsule colliders the same way (bottom stays in place)
-        float ratio = targetHeight / defaultHeight;
-        for (int i = 0; i < extraColliders.Length; i++)
-        {
-            if (extraColliders[i] == null) continue;
-            float newH = extraStandHeights[i] * ratio;
-            extraColliders[i].height = newH;
-            extraColliders[i].center = extraStandCenters[i] + new Vector3(0f, (newH - extraStandHeights[i]) / 2f, 0f);
-        }
+    private void StopSurf()
+    {
+        surfing = false;
+    }
 
-        // shrink the visible body along with the hitbox
-        if (playerBody != null)
-        {
-            playerBody.localScale = new Vector3(1f, ratio, 1f);
-            playerBody.localPosition = new Vector3(0f, heightDiff / 2f, 0f);
-        }
+    public Vector3 GetVelocity()
+    {
+        return rb.velocity;
+    }
 
-        // lower the camera with the hitbox (smooth)
-        float camTargetY = cameraStandY + heightDiff;
-        Vector3 camPos = playerCamera.transform.localPosition;
-        camPos.y = Mathf.Lerp(camPos.y, camTargetY, 15f * Time.deltaTime);
-        playerCamera.transform.localPosition = camPos;
+    public float GetFallSpeed()
+    {
+        return rb.velocity.y;
+    }
 
-        // camera roll while wall running
-        float targetTilt = isWallRunning ? (wallSideRight ? wallRunCamTilt : -wallRunCamTilt) : 0f;
-        camTilt = Mathf.Lerp(camTilt, targetTilt, 10f * Time.deltaTime);
+    public Collider GetPlayerCollider()
+    {
+        return playerCollider;
+    }
 
-        // FOV grows a few degrees while sprinting, then eases back
-        bool sprinting = isRunning && hasInput && horizontalSpeed > walkSpeed + 0.5f;
-        float targetFov = baseFov + (sprinting ? sprintFovBoost : 0f);
-        playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFov, 1f - Mathf.Exp(-fovChangeSpeed * Time.deltaTime));
+    public Transform GetPlayerCamTransform()
+    {
+        return playerCam.transform;
+    }
 
-        Vector3 finalMove = new Vector3(velocity.x, verticalVelocity, velocity.z);
-        characterController.Move(finalMove * Time.deltaTime);
+    public bool IsCrouching()
+    {
+        return crouching;
+    }
 
-        // ---------- look ----------
-        if (canMove && !PauseMenu.GameIsPaused)
-        {
-            rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
-            rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, camTilt);
-            transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
-        }
+    public Rigidbody GetRb()
+    {
+        return rb;
     }
 }
