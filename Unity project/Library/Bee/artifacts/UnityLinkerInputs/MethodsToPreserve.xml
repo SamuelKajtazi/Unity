@@ -7,10 +7,12 @@
 			<method name="Restart"/>
 		</type>
 		<type fullname="MainMenuManager">
-			<method name="CloseSettings"/>
 			<method name="LoadScene"/>
-			<method name="OpenSettings"/>
 			<method name="QuitGame"/>
+		</type>
+		<type fullname="MenuCameraTransition">
+			<method name="CloseSettings"/>
+			<method name="OpenSettings"/>
 		</type>
 		<type fullname="PauseMenu">
 			<method name="LoadMenu"/>

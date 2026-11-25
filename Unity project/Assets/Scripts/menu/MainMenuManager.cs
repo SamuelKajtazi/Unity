@@ -5,7 +5,7 @@ using TMPro;
 
 public class MainMenuManager : MonoBehaviour
 {
-    [Header("Panels")]
+    [Header("Panels (not switched on/off anymore, MenuCameraTransition fades them)")]
     public GameObject mainPanel;
     public GameObject settingsPanel;
 
@@ -20,9 +20,6 @@ public class MainMenuManager : MonoBehaviour
 
     void Start()
     {
-        if (settingsPanel) settingsPanel.SetActive(false);
-        if (mainPanel) mainPanel.SetActive(true);
-
         float fov = PlayerPrefs.GetFloat("FOV", 60f);
         float sens = PlayerPrefs.GetFloat("Sensitivity", 1.5f);
         bool fullscreen = PlayerPrefs.GetInt("Fullscreen", Screen.fullScreen ? 1 : 0) == 1;
@@ -60,16 +57,14 @@ public class MainMenuManager : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
+    // kept so old button references don't break, but they no longer switch panels.
+    // the camera script (MenuCameraTransition) opens and closes the settings now.
     public void OpenSettings()
     {
-        mainPanel.SetActive(false);
-        settingsPanel.SetActive(true);
     }
 
     public void CloseSettings()
     {
-        settingsPanel.SetActive(false);
-        mainPanel.SetActive(true);
         PlayerPrefs.Save();
     }
 

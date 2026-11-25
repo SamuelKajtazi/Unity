@@ -11,12 +11,16 @@
 		<type fullname="KillBrick" preserve="nothing"/>
 		<type fullname="LevelExit" preserve="nothing"/>
 		<type fullname="MainMenuManager" preserve="nothing"/>
+		<type fullname="MenuCameraTransition" preserve="nothing"/>
+		<type fullname="MenuHoverText" preserve="nothing"/>
 		<type fullname="MoveCamera" preserve="nothing"/>
 		<type fullname="PauseMenu" preserve="nothing"/>
 		<type fullname="PlayerHealth" preserve="nothing"/>
 		<type fullname="PlayerMovement" preserve="nothing"/>
 		<type fullname="ProjectileGun" preserve="nothing"/>
+		<type fullname="Readme" preserve="nothing"/>
 		<type fullname="SpinAndBob" preserve="nothing"/>
+		<type fullname="UIVignette" preserve="nothing"/>
 	</assembly>
 	<assembly fullname="Unity.InputSystem">
 		<type fullname="UnityEngine.InputSystem.Editor.RemoteInputPlayerConnectionEditor" preserve="nothing"/>
@@ -88,6 +92,7 @@
 		<type fullname="UnityEngine.BoxCollider" preserve="nothing"/>
 		<type fullname="UnityEngine.Camera" preserve="nothing"/>
 		<type fullname="UnityEngine.Canvas" preserve="nothing"/>
+		<type fullname="UnityEngine.CanvasGroup" preserve="nothing"/>
 		<type fullname="UnityEngine.CanvasRenderer" preserve="nothing"/>
 		<type fullname="UnityEngine.CapsuleCollider" preserve="nothing"/>
 		<type fullname="UnityEngine.Collider" preserve="nothing"/>

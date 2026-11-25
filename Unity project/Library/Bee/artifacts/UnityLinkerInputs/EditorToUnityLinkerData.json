@@ -135,6 +135,20 @@
         {
             "managedAssemblyName": "Assembly-CSharp.dll",
             "nativeClass": "",
+            "fullManagedTypeName": "MenuCameraTransition",
+            "moduleName": "",
+            "usedInScenes": []
+        },
+        {
+            "managedAssemblyName": "Assembly-CSharp.dll",
+            "nativeClass": "",
+            "fullManagedTypeName": "MenuHoverText",
+            "moduleName": "",
+            "usedInScenes": []
+        },
+        {
+            "managedAssemblyName": "Assembly-CSharp.dll",
+            "nativeClass": "",
             "fullManagedTypeName": "MoveCamera",
             "moduleName": "",
             "usedInScenes": []
@@ -207,6 +221,13 @@
             "managedAssemblyName": "Assembly-CSharp.dll",
             "nativeClass": "",
             "fullManagedTypeName": "ProjectileGun",
+            "moduleName": "",
+            "usedInScenes": []
+        },
+        {
+            "managedAssemblyName": "Assembly-CSharp.dll",
+            "nativeClass": "",
+            "fullManagedTypeName": "Readme",
             "moduleName": "",
             "usedInScenes": []
         },
@@ -291,6 +312,13 @@
             "managedAssemblyName": "Unity.TextMeshPro.dll",
             "nativeClass": "",
             "fullManagedTypeName": "TMPro.TMP_StyleSheet",
+            "moduleName": "",
+            "usedInScenes": []
+        },
+        {
+            "managedAssemblyName": "Assembly-CSharp.dll",
+            "nativeClass": "",
+            "fullManagedTypeName": "UIVignette",
             "moduleName": "",
             "usedInScenes": []
         },
@@ -424,7 +452,8 @@
             "moduleName": "Physics",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
-                "Assets/Scenes/Level2.unity"
+                "Assets/Scenes/Level2.unity",
+                "Assets/Scenes/MainMenuScene.unity"
             ]
         },
         {
@@ -446,6 +475,15 @@
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
                 "Assets/Scenes/Level2.unity",
+                "Assets/Scenes/MainMenuScene.unity"
+            ]
+        },
+        {
+            "managedAssemblyName": "UnityEngine.dll",
+            "nativeClass": "CanvasGroup",
+            "fullManagedTypeName": "UnityEngine.CanvasGroup",
+            "moduleName": "UI",
+            "usedInScenes": [
                 "Assets/Scenes/MainMenuScene.unity"
             ]
         },
@@ -477,7 +515,8 @@
             "moduleName": "Physics",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
-                "Assets/Scenes/Level2.unity"
+                "Assets/Scenes/Level2.unity",
+                "Assets/Scenes/MainMenuScene.unity"
             ]
         },
         {
@@ -637,7 +676,8 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
-                "Assets/Scenes/Level2.unity"
+                "Assets/Scenes/Level2.unity",
+                "Assets/Scenes/MainMenuScene.unity"
             ]
         },
         {
@@ -647,7 +687,8 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
-                "Assets/Scenes/Level2.unity"
+                "Assets/Scenes/Level2.unity",
+                "Assets/Scenes/MainMenuScene.unity"
             ]
         },
         {
@@ -657,7 +698,8 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
-                "Assets/Scenes/Level2.unity"
+                "Assets/Scenes/Level2.unity",
+                "Assets/Scenes/MainMenuScene.unity"
             ]
         },
         {
@@ -717,7 +759,8 @@
             "moduleName": "Core",
             "usedInScenes": [
                 "Assets/Scenes/GameScene.unity",
-                "Assets/Scenes/Level2.unity"
+                "Assets/Scenes/Level2.unity",
+                "Assets/Scenes/MainMenuScene.unity"
             ]
         },
         {
